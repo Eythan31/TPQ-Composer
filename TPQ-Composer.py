@@ -268,7 +268,7 @@ class Window2(QDialog):
             if self.steps_y[i] != -1:
                 self.steps_y[i] += 1
             
-        #Temporary print function        
+       #Temporary print function        
 #        print("ysteps: " , self.steps_y)
 #        print("xsteps: " , self.steps_x)
 
@@ -307,7 +307,10 @@ class Window2(QDialog):
             output_file.write("Stratum, TPQ, TPQ Date, Critical, Robustness\n")
         else:
             output_file.write("Stratum, TPQ, TPQ Date, Robustness\n")
-        for i in range(len(self.strata)):
+        start_point = 1
+        while self.steps_y[start_point]==-1:
+            start_point+=1
+        for i in range(start_point,len(self.strata)):
             output_file.write(self.strata[i]+", ")
             output_file.write("Stratum " + self.strata[i] + " ends after the start of " + self.kings[self.steps_y[i]-1] +", ")
             output_file.write(str(self.king_dates[self.steps_y[i]-1]) + ", ")
