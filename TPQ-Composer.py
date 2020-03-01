@@ -12,9 +12,9 @@ def resource_path(relative_path):
   return os.path.join(os.path.abspath('.'), relative_path)
 
 #Joey
-class TestJoey(QDialog):
+class Window1(QDialog):
     def __init__(self):
-       super(TestJoey, self).__init__()
+       super(Window1, self).__init__()
        loadUi(resource_path("./TPQ-Page1.ui"), self)
 
        self.setWindowTitle("TPQ Composer")
@@ -27,12 +27,12 @@ class TestJoey(QDialog):
        self.artifacts = {} 
        #self.NextButton.clicked.connect(self.on_NextButton_clicked())
 
-       self.steps_x=[]
-       self.steps_y=[]
-       self.points_x=[]
-       self.points_y=[]
-       self.strata_numbers = []
-       self.kings_numbers = []
+#       self.steps_x=[]
+#       self.steps_y=[]
+#       self.points_x=[]
+#       self.points_y=[]
+#       self.strata_numbers = []
+#       self.kings_numbers = []
 
     @pyqtSlot()
     def on_NextButton_clicked(self):
@@ -45,44 +45,36 @@ class TestJoey(QDialog):
             msgBox.exec()
         else:
             self.hide()
-            self.page_2 = Test(self.strata, self.kings, self.king_dates)
+            self.page_2 = Window2(self.strata, self.kings, self.king_dates)
             self.page_2.show()
 
     @pyqtSlot()
     def setStrata(self):
         self.strata = [x.strip() for x in self.strataEdit.text().split(",")]
-        #self.artifactTable.setCellWidget(0, 0, self.createStrataComboBox())
         self.strataSet=True
         
     @pyqtSlot()
     def setKings(self):
         self.kings = [x.strip() for x in self.kingsEdit.text().split(",")]
-        #self.artifactTable.setCellWidget(0, 1, self.createKingsComboBox())
-        #self.artifactTable.setItem(0, 2,QTableWidgetItem("1"))
         self.kingsSet=True
         
     @pyqtSlot()
     def setKingsDates(self):
         self.king_dates = [int(x) for x in self.kingDatesEdit.text().split(",")]
-        self.datesSet=True
-# Until here
+        self.datesSet=True        
         
-        
-class Test(QDialog):
+class Window2(QDialog):
     def __init__(self, strata, kings, king_dates):
-       super(Test, self).__init__()
+       super(Window2, self).__init__()
        loadUi(resource_path("./TPQ-Page2.ui"), self)
        
        self.setWindowTitle("TPQ Composer")
-       #self.makeGraphButton.clicked.connect(self.on_makeGraphButton_clicked)
        self.removeRowButton.clicked.connect(self.removeRow)
        self.addRowButton.setEnabled(True)
        self.removeRowButton.setEnabled(True)
        self.makeGraphButton.setEnabled(True)
        self.makeCSVButton.setEnabled(True)
-#       self.strataSet=False
-#       self.kingsSet=False
-#       self.datesSet=False
+
        self.FIGURE_TITLE=""
        self.strata = strata  
        self.kings  = kings
@@ -99,8 +91,6 @@ class Test(QDialog):
        self.POINTS_COLOR = ''          #color of the points
        self.STEP_FUNCTION_COLOR = ''   #color of the step function
        self.DPI = 300                     #DPI of the artifacts graph
-#       self.ARTIFACTS_GRAPH_FILENAME = 'artifacts-.png' #filename of the artifacts graph
-#       self.TPQS_FILENAME = ''                       #filename of the TPQ csv file
        self.X_AXIS_LABEL = ''         #label of the X axis
        self.Y_AXIS_LABEL = ''         #label of the Y axis
        self.robustness = 1
@@ -114,24 +104,28 @@ class Test(QDialog):
        self.artifactTable.setCellWidget(0, 1, self.createKingsComboBox())
        self.artifactTable.setItem(0, 2,QTableWidgetItem("1"))
        
-       
     @pyqtSlot()
     def on_makeGraphButton_clicked(self):
-        self.getAllValuesFromArtifactTable() 
-        self.getValuesFromFields() 
-        self.computeAllData()
-        self.make_graph()
-        QMessageBox.about(self, "Message", "The artifacts graph has been generated successfully.")
-        
+        saveFileTuple = QFileDialog.getSaveFileName(self, 'Choose save name and location', '', 'Images (*.png *.jpg *.tif *.png *.pdf *.svg)')
+        fileName=saveFileTuple[0]
+        if fileName:
+            self.getAllValuesFromArtifactTable() 
+            self.getValuesFromFields() 
+            self.computeAllData()        
+            self.make_graph(fileName)
+            QMessageBox.about(self, "Message", "The artifacts graph has been generated successfully.")
+
     @pyqtSlot()
     def on_makeCSVButton_clicked(self):
-        self.getAllValuesFromArtifactTable() 
-        self.getValuesFromFields()
-        self.computeAllData()
-        self.makeCSV()#self.steps_y)
-        QMessageBox.about(self, "Message", "The CSV file has been generated successfully.")
+        saveFileTuple = QFileDialog.getSaveFileName(self, 'Choose save name and location', '', 'CSV (*.csv)')
+        fileName=saveFileTuple[0]
+        if fileName:
+            self.getAllValuesFromArtifactTable() 
+            self.getValuesFromFields()
+            self.computeAllData()
+            self.makeCSV(fileName)
+            QMessageBox.about(self, "Message", "The CSV file has been generated successfully.")
 
-       
     def createStrataComboBox(self):
         combo = QtWidgets.QComboBox()
         for stratum in self.strata:
@@ -239,19 +233,20 @@ class Test(QDialog):
 #        for i in reversed(range(len(self.robusts))):
 #            print('%2d: '  %(i+1), self.robusts[i])
 
-            
-        self.steps_x = list((range(len(self.strata)+1)))# 0,1,2,3, ...., nbr_of_strata
-        del self.steps_x[0] # 1,2,3, ...., nbr_of_strata
-        self.steps_y=[]
-        self.kings_numbers_2=[]
-        for s in self.strata: # for each stratum s (string)
-            if(s in self.artifacts):
-                kings_vals = self.artifacts[s]
-            else:
-                kings_vals = []        
-            self.kings_numbers_2.extend([kings_d[val[0]] for val in kings_vals])#add to the list the number of each king associated with this stratum and with all preceding strata          
-            max_king = max(self.kings_numbers_2)
-            self.steps_y.append(max_king)
+#       OLD VERSION:
+        
+#        self.steps_x = list((range(len(self.strata)+1)))# 0,1,2,3, ...., nbr_of_strata
+#        del self.steps_x[0] # 1,2,3, ...., nbr_of_strata
+#        self.steps_y=[]
+#        self.kings_numbers_2=[]
+#        for s in self.strata: # for each stratum s (string)
+#            if(s in self.artifacts):
+#                kings_vals = self.artifacts[s]
+#            else:
+#                kings_vals = []        
+#            self.kings_numbers_2.extend([kings_d[val[0]] for val in kings_vals])#add to the list the number of each king associated with this stratum and with all preceding strata          
+#            max_king = max(self.kings_numbers_2)
+#            self.steps_y.append(max_king)
         
         #Joey Robustness Function
         self.steps_y=[]
@@ -278,12 +273,7 @@ class Test(QDialog):
 #        print("xsteps: " , self.steps_x)
 
             
-    def make_graph(self) : 
-        filename = QFileDialog.getSaveFileName(self, 'Choose save name and location', '', '*.png, *.jpg, *.tif, *.png, *.pdf, *.svg')
-#        if len(self.kings) != len(self.king_dates):
-#            QMessageBox.about(self, "Error", "The number of kings and the number of earliest kings dates must match.")
-#            return
-#        
+    def make_graph(self, fileName) : 
         fig, ax1 = plt.subplots(1,1)
         
         plt.title(self.FIGURE_TITLE)
@@ -309,11 +299,10 @@ class Test(QDialog):
                 plt.annotate('  ' + str(self.points_nbr[i]), xy=(self.points_x[i], self.points_y[i] + y_offset))            
         #ax1.fill_between(self.steps_x, 0, self.steps_y, alpha=.3, step = 'post', color = self.STEP_FUNCTION_COLOR)
         ax1.set_ylim(bottom=0)
-        plt.savefig(filename[0], dpi=self.DPI, bbox_inches='tight')
+        plt.savefig(fileName, dpi=self.DPI, bbox_inches='tight')
         
-    def makeCSV(self):
-        filename = QFileDialog.getSaveFileName(self, 'Choose save name and location', '', '*.png, *.jpg, *.tif, *.png, *.pdf, *.svg')
-        output_file = open(filename[0],"w") 
+    def makeCSV(self, fileName):
+        output_file = open(fileName,"w") 
         if self.robustness == 1:
             output_file.write("Stratum, TPQ, TPQ Date, Critical, Robustness\n")
         else:
@@ -325,7 +314,7 @@ class Test(QDialog):
             robustness = 0
    # No critical column for robustness greater than 1
             if self.robustness == 1:         
-                if(self.steps_y[i]>self.robustness and self.steps_y[i] > self.steps_y[i-1]):
+                if(i==0 or self.steps_y[i] > self.steps_y[i-1]):
                     output_file.write("YES, ")
                 else:
                     output_file.write("NO, ")
@@ -337,7 +326,7 @@ class Test(QDialog):
             output_file.write("\n")
 
 app = QtWidgets.QApplication(sys.argv)
-widget = TestJoey()
+widget = Window1()
 widget.show()
 app.exec_()
    
