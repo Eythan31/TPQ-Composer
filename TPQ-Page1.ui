@@ -145,7 +145,7 @@
    <property name="font">
     <font>
      <family>Times New Roman</family>
-     <pointsize>24</pointsize>
+     <pointsize>18</pointsize>
      <italic>false</italic>
     </font>
    </property>
