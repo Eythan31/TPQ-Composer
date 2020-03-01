@@ -236,8 +236,8 @@ class Test(QDialog):
             for j in range(1,len(self.robusts[i])):
                 self.robusts[i][j] += self.robusts[i][j-1]
         #Temporary print function
-        for i in reversed(range(len(self.robusts))):
-            print('%2d: '  %(i+1), self.robusts[i])
+#        for i in reversed(range(len(self.robusts))):
+#            print('%2d: '  %(i+1), self.robusts[i])
 
             
         self.steps_x = list((range(len(self.strata)+1)))# 0,1,2,3, ...., nbr_of_strata
@@ -274,12 +274,12 @@ class Test(QDialog):
                 self.steps_y[i] += 1
             
         #Temporary print function        
-        print("ysteps: " , self.steps_y)
-        print("xsteps: " , self.steps_x)
+#        print("ysteps: " , self.steps_y)
+#        print("xsteps: " , self.steps_x)
 
             
     def make_graph(self) : 
-        filename = QFileDialog.getSaveFileName(self, 'Choose save name and location', '', 'Image Files (*.png *.jpg *.tif *.png *.pdf *.svg')
+        filename = QFileDialog.getSaveFileName(self, 'Choose save name and location', '', '*.png, *.jpg, *.tif, *.png, *.pdf, *.svg')
 #        if len(self.kings) != len(self.king_dates):
 #            QMessageBox.about(self, "Error", "The number of kings and the number of earliest kings dates must match.")
 #            return
@@ -307,12 +307,12 @@ class Test(QDialog):
         for i in range(len(self.points_x)):
             if(self.points_nbr[i] >1):
                 plt.annotate('  ' + str(self.points_nbr[i]), xy=(self.points_x[i], self.points_y[i] + y_offset))            
-        ax1.fill_between(self.steps_x, 0, self.steps_y, alpha=.3, step = 'post', color = self.STEP_FUNCTION_COLOR)
+        #ax1.fill_between(self.steps_x, 0, self.steps_y, alpha=.3, step = 'post', color = self.STEP_FUNCTION_COLOR)
         ax1.set_ylim(bottom=0)
         plt.savefig(filename[0], dpi=self.DPI, bbox_inches='tight')
         
     def makeCSV(self):
-        filename = QFileDialog.getSaveFileName(self, 'Choose save name and location', '', 'Image Files (*.png *.jpg *.tif *.png *.pdf *.svg')
+        filename = QFileDialog.getSaveFileName(self, 'Choose save name and location', '', '*.png, *.jpg, *.tif, *.png, *.pdf, *.svg')
         output_file = open(filename[0],"w") 
         if self.robustness == 1:
             output_file.write("Stratum, TPQ, TPQ Date, Critical, Robustness\n")
