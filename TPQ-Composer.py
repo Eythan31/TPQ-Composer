@@ -298,7 +298,7 @@ class Window2(QDialog):
             if(self.points_nbr[i] >1):
                 plt.annotate('  ' + str(self.points_nbr[i]), xy=(self.points_x[i], self.points_y[i] + y_offset))            
         #ax1.fill_between(self.steps_x, 0, self.steps_y, alpha=.3, step = 'post', color = self.STEP_FUNCTION_COLOR)
-        ax1.set_ylim(bottom=0)
+        ax1.set_ylim(0, len(self.kings)+1)
         plt.savefig(fileName, dpi=self.DPI, bbox_inches='tight')
         
     def makeCSV(self, fileName):
