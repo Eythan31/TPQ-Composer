@@ -25,14 +25,6 @@ class Window1(QDialog):
        self.kings  = [] 
        self.king_dates = []
        self.artifacts = {} 
-       #self.NextButton.clicked.connect(self.on_NextButton_clicked())
-
-#       self.steps_x=[]
-#       self.steps_y=[]
-#       self.points_x=[]
-#       self.points_y=[]
-#       self.strata_numbers = []
-#       self.kings_numbers = []
 
     @pyqtSlot()
     def on_NextButton_clicked(self):
@@ -298,7 +290,7 @@ class Window2(QDialog):
             if(self.points_nbr[i] >1):
                 plt.annotate('  ' + str(self.points_nbr[i]), xy=(self.points_x[i], self.points_y[i] + y_offset))            
         #ax1.fill_between(self.steps_x, 0, self.steps_y, alpha=.3, step = 'post', color = self.STEP_FUNCTION_COLOR)
-        ax1.set_ylim(0, len(self.kings)+1)
+        ax1.set_ylim(0, len(self.kings)+1) # for making graph higher (along y axis)
         plt.savefig(fileName, dpi=self.DPI, bbox_inches='tight')
         
     def makeCSV(self, fileName):
