@@ -307,7 +307,7 @@ class Window2(QDialog):
             output_file.write("Stratum, TPQ, TPQ Date, Critical, Robustness\n")
         else:
             output_file.write("Stratum, TPQ, TPQ Date, Robustness\n")
-        start_point = 1
+        start_point = 0
         while self.steps_y[start_point]==-1:
             start_point+=1
         for i in range(start_point,len(self.strata)):
